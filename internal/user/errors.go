@@ -15,6 +15,11 @@ var (
 
 	ErrUserCreationFailed = &errors.AppError{
 		Code:    errors.CodeInternal,
-		Message: "não foi possível criar usuário",
+		Message: "Não foi possível criar usuário",
+	}
+
+	ErrUserSearchFailed = &errors.AppError{
+		Code:    errors.CodeInternal,
+		Message: "Não foi possível buscar usuário",
 	}
 )

@@ -39,6 +39,25 @@ func ToHTTP(err error) (int, any) {
 			"code":    appErr.Code,
 			"message": appErr.Message,
 		}
+
+	case CodeErrorNoPermission:
+		return http.StatusUnauthorized, gin.H{
+			"code":    appErr.Code,
+			"message": appErr.Message,
+		}
+
+	case CodeErrNoToken:
+		return http.StatusUnauthorized, gin.H{
+			"code":    appErr.Code,
+			"message": appErr.Message,
+		}
+
+	case CodeErrInvalidToken:
+		return http.StatusUnauthorized, gin.H{
+			"code":    appErr.Code,
+			"message": appErr.Message,
+		}
+
 	}
 
 	return http.StatusInternalServerError, gin.H{

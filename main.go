@@ -11,11 +11,11 @@ func main() {
 
 	jwtCfg := config.LoadJWT()
 
-	auth.NewJWTService(jwtCfg.Secret)
+	j := auth.NewJWTService(jwtCfg.Secret)
 
 	database.ConectaComBancoDeDados()
 
-	router.SetupRouter().Run()
+	router.SetupRouter(j).Run()
 	// Inicia o servidor na porta 8080
 	// escuta e serve em 0.0.0.0:8080
 }

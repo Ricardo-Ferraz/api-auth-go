@@ -4,9 +4,9 @@ import (
 	"api-auth/internal/security"
 	"api-auth/internal/shared/database"
 	"errors"
-	"fmt"
 
 	"github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 func Create(req CreateUserRequest) (*UserResponse, error) {
@@ -30,11 +30,34 @@ func Create(req CreateUserRequest) (*UserResponse, error) {
 		return nil, ErrUserCreationFailed
 	}
 
-	fmt.Println(userModel)
-
 	resp := ToUserResponse(userModel)
 
 	return &resp, nil
+}
+
+func FindById(id int64) (*UserSearchResponse, error) {
+	userModel := User{}
+
+	err := database.DB.
+		Debug().
+		Where("id = ?", id).
+		Preload("Roles").
+		First(&userModel).Error
+
+	if err != nil {
+		if isNotFoundError(err) {
+			return nil, ErrUserNotFound
+		}
+
+		return nil, ErrUserSearchFailed
+	}
+	resp := ToUserSearchResponse(userModel)
+
+	return &resp, nil
+}
+
+func isNotFoundError(err error) bool {
+	return errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 func isUniqueConstraintError(err error) bool {

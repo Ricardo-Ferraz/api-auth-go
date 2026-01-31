@@ -1,8 +1,18 @@
 package auth
 
-import "time"
+import (
+	"time"
 
-type jwtService struct {
-	secret     []byte
-	expiration time.Duration
+	"github.com/golang-jwt/jwt/v5"
+)
+
+type JWTService struct {
+	Secret     []byte
+	Expiration time.Duration
+}
+
+type JWTClaims struct {
+	Roles    []string `json:"roles"`
+	Username string   `json:"username"`
+	jwt.RegisteredClaims
 }

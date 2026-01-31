@@ -7,17 +7,19 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var j jwtService
+var j JWTService
 
-func NewJWTService(secret string) {
+func NewJWTService(secret string) JWTService {
 
-	j.secret = []byte(secret)
-	j.expiration = 10 * time.Minute
+	j.Secret = []byte(secret)
+	j.Expiration = 10 * time.Minute
+
+	return j
 }
 
 func Generate(id int64, username string, roles []string) (string, int64) {
 	now := time.Now()
-	expiresAt := now.Add(j.expiration)
+	expiresAt := now.Add(j.Expiration)
 
 	claims := jwt.MapClaims{
 		"sub":      strconv.FormatInt(id, 10),
@@ -29,7 +31,7 @@ func Generate(id int64, username string, roles []string) (string, int64) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, _ := token.SignedString(j.secret)
+	signedToken, _ := token.SignedString(j.Secret)
 
 	return signedToken, expiresAt.Unix()
 }

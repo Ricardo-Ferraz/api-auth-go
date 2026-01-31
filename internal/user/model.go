@@ -1,12 +1,12 @@
 package user
 
-import "api-auth/internal/roles"
+import "api-auth/internal/role"
 
 type User struct {
 	Id       int64  `gorm:"primaryKey"`
 	Username string `gorm:"uniqueIndex"`
 	PassHash string
-	Roles    []roles.Role `gorm:"foreignKey:UserId"`
+	Roles    []role.Role `gorm:"foreignKey:UserId"`
 }
 
 func (u *User) ReturnNameRoles() []string {

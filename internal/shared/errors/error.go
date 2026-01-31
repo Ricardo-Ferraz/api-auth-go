@@ -8,7 +8,9 @@ const (
 	CodeConflict           Code = "CONFLICT"
 	CodeValidation         Code = "VALIDATION_ERROR"
 	CodeInternal           Code = "INTERNAL_ERROR"
-	CodeErrorNegocioZZZ    Code = "NEGOCIO_ZZZ"
+	CodeErrorNoPermission  Code = "NO_PERMISSION"
+	CodeErrNoToken         Code = "NO_TOKEN"
+	CodeErrInvalidToken    Code = "INVALID_TOKEN"
 )
 
 type AppError struct {
