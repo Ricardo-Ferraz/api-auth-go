@@ -36,7 +36,7 @@ jobs:
       - name: Build Image
         run: |
           docker build \
-          --build-arg VERSION=${{ github.event.head_commit.message }} \
+          --build-arg VERSION="${{ github.event.head_commit.message }}" \
           --build-arg COMMIT=${{ github.sha }} \
           --build-arg BUILD_TIME=${BUILD_TIME} \
           -t ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG} .
