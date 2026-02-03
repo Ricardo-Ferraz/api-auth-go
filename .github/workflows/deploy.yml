@@ -55,6 +55,10 @@ jobs:
         run: |
             aws eks update-kubeconfig --name ${{ secrets.NOME_CLUSTER }} --region ${{ secrets.REGION }}
 
+      - name: debug EKS identity
+        run: |
+            kubectl get ns
+
       - name: Deploy to EKS
         run: |
           kubectl set image deployment/api-go-auth-deployment \
