@@ -42,7 +42,7 @@ jobs:
           docker push ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.ROLE }}
           aws-region: ${{ secrets.REGION }}
