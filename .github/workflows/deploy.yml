@@ -1,0 +1,39 @@
+name: Deploy To EKS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create tag
+        run: |
+            SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+            TIMESTAMP=$(date -u +'%Y%m%dT%H%M%S')
+            echo "IMAGE_TAG=${TIMESTAMP}-${SHORT_SHA}" >> $GITHUB_ENV
+            echo "BUILD_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
+      - name: Login Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASS }}" | docker login \
+          -u "${{ secrets.DOCKERHUB_USER }}" --password-stdin
+
+      - name: Build Image
+        run: |
+          docker build \
+          --build-arg VERSION=${{ github.ref_name }} \
+          --build-arg COMMIT=${{ github.sha }} \
+          --build-arg BUILD_TIME=${BUILD_TIME} \
+          -t ricardo0246/api-auth-go:${IMAGE_TAG} .
+
+      - name: Push Image
+        run: |
+          docker push ricardo0246/api-auth-go:${IMAGE_TAG}
