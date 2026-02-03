@@ -55,10 +55,6 @@ jobs:
         run: |
             aws eks update-kubeconfig --name ${{ secrets.NOME_CLUSTER }} --region ${{ secrets.REGION }}
 
-      - name: debug EKS 
-        run: |
-            kubectl --v=9 get ns
-
       - name: debug EKS identity
         run: |
             aws sts get-caller-identity
