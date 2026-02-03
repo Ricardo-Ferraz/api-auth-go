@@ -17,14 +17,16 @@ jobs:
       - name: Create tag
         run: |
             SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-            TIMESTAMP=$(date -u +'%Y%m%dT%H%M%S')
+            TIMESTAMP=$(TZ=America/Sao_Paulo date +'%Y%m%dT%H%M%S')
+            BUILD_TIME=$(TZ=America/Sao_Paulo date +'%Y-%m-%dT%H:%M:%S-03:00')
+            
             echo "IMAGE_TAG=${TIMESTAMP}-${SHORT_SHA}" >> $GITHUB_ENV
-            echo "BUILD_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+            echo "BUILD_TIME=${BUILD_TIME}" >> $GITHUB_ENV
 
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         
       - name: Build Image
