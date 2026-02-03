@@ -19,7 +19,7 @@ jobs:
             SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
             TIMESTAMP=$(TZ=America/Sao_Paulo date +'%Y%m%dT%H%M%S')
             BUILD_TIME=$(TZ=America/Sao_Paulo date +'%Y-%m-%dT%H:%M:%S-03:00')
-            
+
             echo "IMAGE_TAG=${TIMESTAMP}-${SHORT_SHA}" >> $GITHUB_ENV
             echo "BUILD_TIME=${BUILD_TIME}" >> $GITHUB_ENV
 
@@ -40,3 +40,14 @@ jobs:
       - name: Push Image
         run: |
           docker push ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG}
+
+      - name: Set kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+
+      - name: Deploy to EKS
+        run: |
+          kubectl set image deployment/api-go-auth-deployment \
+            api-auth-go=${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG} \
+            -n backend
