@@ -40,7 +40,7 @@ jobs:
           --build-arg COMMIT=${{ github.sha }} \
           --build-arg BUILD_TIME=${BUILD_TIME} \
           -t ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG} .
-
+ 
       - name: Push Image
         run: |
           docker push ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG}
