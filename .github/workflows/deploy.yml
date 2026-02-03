@@ -41,16 +41,15 @@ jobs:
         run: |
           docker push ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG}
 
-      - name: Configure AWS
-        run: |
-            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set region ${{ secrets.REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.ROLE }}
+          aws-region: ${{ secrets.REGION }}
 
-      - name: Set kubeconfig #Será alterado para gerar dinamicamente
+      - name: Login EKS 
         run: |
-            echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/kubeconfig
-            echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+            aws eks update-kubeconfig --name ${{ secrets.NOME_CLUSTER }} --region ${{ secrets.REGION }}
 
       - name: Deploy to EKS
         run: |
