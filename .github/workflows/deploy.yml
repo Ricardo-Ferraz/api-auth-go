@@ -55,8 +55,15 @@ jobs:
         run: |
             aws eks update-kubeconfig --name ${{ secrets.NOME_CLUSTER }} --region ${{ secrets.REGION }}
 
-      - name: Deploy to EKS
+      - name: Deploy to EKS - EC2
+        continue-on-error: true
         run: |
           kubectl set image deployment/api-go-auth-deployment \
             api-auth-go=${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG} \
             -n backend
+
+      - name: Deploy to EKS - Fargate
+        run: |
+          kubectl set image deployment/api-go-auth-deployment \
+            api-auth-go=${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG} \
+            -n fargate-backend

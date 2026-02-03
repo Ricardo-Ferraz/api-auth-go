@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fargate-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-go-auth-deployment
+  namespace: fargate-backend
+  labels:
+    app: api-go-auth-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-go-auth-app
+  template:
+    metadata:
+      labels:
+        app: api-go-auth-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - arm64
+      containers:
+      - name: api-auth-go
+        image: docker.io/ricardo0246/api-auth-go:latest
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+          - name: AAAAAAAAAA_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: AAAAAAAAAA_SECRET
+          - name: DB_STRING
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: DB_STRING
+        imagePullPolicy: IfNotPresent
+      nodeSelector:
+        kubernetes.io/os: linux
