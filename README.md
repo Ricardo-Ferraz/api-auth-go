@@ -76,11 +76,22 @@ FOREIGN KEY (user_id) REFERENCES users(id)
 ---
 
 ## Inicialização da Aplicação
+A aplicação escuta, por padrão, na porta 8080.
+
+### Local
 
     go run main.go
 
-    A aplicação escuta, por padrão, na porta 8080.
+### Docker
+Necessario passar as variaveis de ambiente informadas anteriormente para o container
 
+    docker build \
+    --build-arg VERSION="VALOR_VERSION" \
+    --build-arg COMMIT=VALOR_COMMIT \
+    --build-arg BUILD_TIME=VALOR_BUILD_TIME \
+    -t ${{secrets.DOCKERHUB_USER}}/api-auth-go:${IMAGE_TAG} .
+
+    docker run -p 8080:80 <IMAGEM>
 ---
 
 ##  Endpoints da API
